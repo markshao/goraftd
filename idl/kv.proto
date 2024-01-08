@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package keyValueStore;
+
+service KeyStore {
+  rpc Write(WriteRequest) returns (WriteResponse) {};
+  rpc Read(ReadRequest) returns (ReadResponse) {};
+}
+
+message WriteRequest {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message WriteResponse {
+  bool success = 1;
+}
+
+message ReadRequest {
+  bytes key = 1;
+}
+
+message ReadResponse {
+  bytes value = 1;
+}
