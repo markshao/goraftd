@@ -4,15 +4,22 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 
 BINARY_NAME=goraftd
+CMD_KVCLIENT=kvclient
 
 all: clean build
 
 output_dir := ./output
 gen_dir := ./gen
 
-build: clean
-	mkdir ./output
-	GOOS=linux GOARCH=amd64 $(GOBUILD) -o ./output/$(BINARY_NAME) -v
+build_linux: clean
+	mkdir -p ./output/linux
+	GOOS=linux GOARCH=amd64 $(GOBUILD) -o ./output/linux/$(BINARY_NAME) main.go utils.go
+	GOOS=linux GOARCH=amd64 $(GOBUILD) -o ./output/linux/$(CMD_KVCLIENT) cmd/kvclient/main.go
+
+build_arm64: clean
+	mkdir -p ./output/arm64
+	$(GOBUILD) -o ./output/arm64/$(BINARY_NAME) main.go utils.go
+	$(GOBUILD) -o ./output/arm64/$(CMD_KVCLIENT) cmd/kvclient/main.go
 
 clean:
 	$(GOCLEAN)
