@@ -8,6 +8,7 @@ BINARY_NAME=goraftd
 all: clean build
 
 output_dir := ./output
+gen_dir := ./gen
 
 build: clean
 	mkdir ./output
@@ -22,6 +23,14 @@ clean:
             echo "$(output_dir) does not exist."; \
         fi
 
+clean_gen:
+	@if [ -e "$(gen_dir)" ]; then \
+                    echo "Removing $(output_dir)"; \
+                    rm -r "$(gen_dir)"; \
+                else \
+                    echo "$(gen_dir) does not exist."; \
+                fi
+
 test:
 	$(GOTEST) -v ./...
 
@@ -32,7 +41,8 @@ run:
 buildImage:
 	docker build -t goraftd .
 
-gen:
+gen: clean_gen
+	mkdir ./gen
 	protoc --go_out=./gen --go_opt=paths=source_relative \
         --go-grpc_out=./gen --go-grpc_opt=paths=source_relative \
         idl/kv.proto
